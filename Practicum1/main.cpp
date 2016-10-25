@@ -4,8 +4,10 @@ using namespace std;
 
 int main()
 {
-  CAutomat G = CAutomat("bba.ab.+*b..*");
+  CAutomat G = CAutomat("acb..bab.c. * .ab.ba.+.+*a.");
   G.print();
+  cout << G.minWordLength('b', 3);
   return 0;
 }
-
+//ab+c.aba.∗.bac.+.+∗
+//acb..bab.c. ∗ .ab.ba. + . + ∗a.
