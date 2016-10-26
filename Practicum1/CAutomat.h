@@ -217,7 +217,7 @@ CAutomat CAutomat::add(const CAutomat &aut) {
     return *this;
 }
 
-int CAutomat::minWordLength(const char &neededSymbol, const int &neededCount) const {
+int CAutomat::calculateMinWordLength(const char &neededSymbol, const int &neededCount) const {
     std::vector<std::vector<int> > dist(nodesNumber, std::vector<int>(neededCount + 2, INFINITY));
     std::vector<std::vector<bool> > used(nodesNumber, std::vector<bool>(neededCount + 2, false));
     std::deque<std::pair<int, int> > Q;

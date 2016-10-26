@@ -40,7 +40,7 @@ int main()
         return 0;
     }
     CAutomat G = CAutomat(regExp);
-    cout << G.minWordLength(symbol, count);
+    cout << G.calculateMinWordLength(symbol, count);
     return 0;
 }
 
