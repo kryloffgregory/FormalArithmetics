@@ -40,6 +40,7 @@ int main()
         return 0;
     }
     CAutomat G = CAutomat(regExp);
+    //G.print();
     cout << G.calculateMinWordLength(symbol, count);
     return 0;
 }

@@ -48,8 +48,9 @@ public:
     CAutomat concat( const CAutomat &aut,const char &letter = EPSILON);
 
     //loop automat, when "*"
-    //we add epsilon-edges from final nodes to the start node and define the set of
-    // final nodes as the only start node
+    //we add new final node
+    //we add epsilon-edges from previous final nodes and start node to new final node and define the set of
+    // final nodes as the only new final node
     CAutomat loop();
 
     //add automat, when addition ("+")
@@ -187,10 +188,14 @@ CAutomat CAutomat::concat(const CAutomat &aut,const char &letter) {
 }
 
 CAutomat CAutomat::loop() {
+    nodesNumber += 1;
+    std::set<edge> tmp = std::set<edge>();
+    edges.insert(edges.end(), tmp);
+    addEdge(startNode, EPSILON, nodesNumber - 1);
     for(int finalNode : finalNodes)
-        addEdge(finalNode, EPSILON, startNode);
+        addEdge(finalNode, EPSILON, nodesNumber - 1);
     finalNodes.clear();
-    finalNodes.insert(startNode);
+    finalNodes.insert(nodesNumber - 1);
     return *this;
 }
 
