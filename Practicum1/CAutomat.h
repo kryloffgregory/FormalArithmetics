@@ -57,6 +57,9 @@ public:
     //we make a new start node and add epsilon-edges from it to old start nodes of the both automats
     CAutomat add(const CAutomat & aut);
 
+    // add new start and final node, connected by epsilon-edges with the automat
+    CAutomat extendByEpsilons();
+
     //returns minumum length of word, such as count of definite $symbol equals to $count
     //uses breadth-first search in 0-1 graph, 0 - epsilon-edge, 1 - the others
     //nodes - pair(node is NFA, count of $symbol in word-path to it)
@@ -163,7 +166,20 @@ CAutomat::CAutomat(const std::string &regExp) {
     copy(blocks.top());
 }
 
-
+CAutomat CAutomat::extendByEpsilons() {
+    nodesNumber += 2;
+    std::set<edge> tmp = std::set<edge>();
+    edges.insert(edges.end(), tmp);
+    edges.insert(edges.end(), tmp);
+    addEdge(nodesNumber - 2, EPSILON, startNode);
+    for(int finalNode : finalNodes) {
+        addEdge(finalNode, EPSILON, nodesNumber - 1);
+    }
+    finalNodes.clear();
+    finalNodes.insert(nodesNumber - 1);
+    setStart(nodesNumber - 2);
+    return *this;
+}
 
 CAutomat CAutomat::concat(const CAutomat &aut,const char &letter) {
     auto autEdges = aut.getEdges();
@@ -184,20 +200,21 @@ CAutomat CAutomat::concat(const CAutomat &aut,const char &letter) {
     finalNodes.clear();
     for(auto finalNode : aut.getFinalNodes())
         finalNodes.insert(finalNode + prevNodesNumber);
+    extendByEpsilons();
     return *this;
 }
 
 CAutomat CAutomat::loop() {
-    nodesNumber += 1;
-    std::set<edge> tmp = std::set<edge>();
-    edges.insert(edges.end(), tmp);
-    addEdge(startNode, EPSILON, nodesNumber - 1);
-    for(int finalNode : finalNodes)
-        addEdge(finalNode, EPSILON, nodesNumber - 1);
-    finalNodes.clear();
-    finalNodes.insert(nodesNumber - 1);
+
+    //addEdge(startNode, EPSILON, nodesNumber - 1);
+    for(int finalNode : finalNodes) {
+        //addEdge(finalNode, EPSILON, nodesNumber - 1);
+        addEdge(finalNode, EPSILON, startNode);
+    }
+    extendByEpsilons();
     return *this;
 }
+
 
 CAutomat CAutomat::add(const CAutomat &aut) {
     auto autEdges = aut.getEdges();
@@ -220,6 +237,7 @@ CAutomat CAutomat::add(const CAutomat &aut) {
     addEdge(nodesNumber - 1, EPSILON, startNode2);
     setStart(nodesNumber - 1);
     return *this;
+    extendByEpsilons();
 }
 
 int CAutomat::calculateMinWordLength(const char &neededSymbol, const int &neededCount) const {
