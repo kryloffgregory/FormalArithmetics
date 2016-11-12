@@ -211,6 +211,8 @@ CAutomat CAutomat::loop() {
         //addEdge(finalNode, EPSILON, nodesNumber - 1);
         addEdge(finalNode, EPSILON, startNode);
     }
+    finalNodes.clear();
+    finalNodes.insert(startNode);
     extendByEpsilons();
     return *this;
 }
